@@ -76,6 +76,8 @@
 
 
 (deftest metalog-test
+  (set-global-metalogger metalog)
+
   (testing "Warnings and below print to *out*"
     (is (= "warning\n" (with-out-str
                          (log :warn "warning")))))
@@ -97,6 +99,9 @@
 
 
 (deftest expect-within-test
+  (set-global-metalogger ;; Less chatty test traces
+   (fn [level & more]))
+
   (testing "Immediate success returns immediately"
     (let [before  (.getTime (Date.))
           success (expect-within (millis/<-seconds 2)
@@ -129,11 +134,14 @@
           after   (.getTime (Date.))
           time    (- after before)]
 
-     (is (instance? IllegalStateException result))
-     (is (< timeout time)))))
+      (is (instance? IllegalStateException result))
+      (is (< timeout time)))))
 
 
 (deftest retry?-test
+  (set-global-metalogger ;; Less chatty test traces
+   (fn [level & more]))
+
   (testing "Retry up to :max-retries times: "
     (testing "too many timeouts"
       (let [r0 (new-default-job "timeout-test"
@@ -187,6 +195,9 @@
 
 
 (deftest try*-timeout-millis-test
+  (set-global-metalogger ;; Less chatty test traces
+   (fn [level & more]))
+
   (testing "Success returns results"
     (is (= 42 (try*-timeout-millis 1000 42))))
 
@@ -198,6 +209,9 @@
 
 
 (deftest retry-with-timeout-test
+  (set-global-metalogger ;; Less chatty test traces
+   (fn [level & more]))
+
   (testing "nil arguments throw ExceptionInfo"
     (testing "nil in main argument list"
       (is (thrown? ExceptionInfo
