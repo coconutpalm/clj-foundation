@@ -39,6 +39,3 @@
     (is (= "3h 29m 33s"    (str (->dhms (+ (<-hours 3) (<-minutes 29) (<-seconds 33) 500)))))
     (is (= "29m 33s"       (str (->dhms (+ (<-minutes 29) (<-seconds 33) 500)))))
     (is (= "33s"           (str (->dhms (+ (<-seconds 33) 500)))))))
-
-
-(run-tests)

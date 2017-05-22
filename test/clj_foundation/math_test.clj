@@ -24,5 +24,3 @@
       (is (s/validate MixedNumberParts frac-only))
       (is (= 0 (:whole frac-only)))
       (is (= 1/4 (:frac frac-only))))))
-
-(run-tests)

@@ -99,6 +99,3 @@
 
   (testing "nested.propertyName -> :nested.property-name"
     (is (= :nested.property-name (keywordize "nested.propertyName")))))
-
-
-(run-tests)

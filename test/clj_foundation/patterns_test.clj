@@ -96,6 +96,3 @@
            (let [map (letfn-map [(f [x] (* 2 x))])
                  d (:f map)]
              (d 16))))))
-
-
-(run-tests)

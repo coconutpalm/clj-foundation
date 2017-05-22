@@ -71,7 +71,3 @@
             :address.state       "AZ"
             :address.postal-code "99999"}
            (bean-props john-doe firstName lastName address.street address.street2 address.city address.state address.postalCode)))))
-
-
-
-(run-tests)

@@ -353,7 +353,3 @@
 
       (is (instance? IllegalArgumentException
                      (try* (must-be "Truthy" blatz (println blatz))))))))
-
-
-
-(run-tests)

@@ -35,6 +35,3 @@
   (testing "When the default configuration file is overridden via an environment variable, its values are returned"
     (is (= "yo!" (config-prod :hello :english)))
     (is (= "salut" (config-prod :hello :french)))))
-
-
-(run-tests)

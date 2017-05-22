@@ -54,6 +54,3 @@
     (let [[sql arg-names] (sql-vars "select * from foobar where foo=${foo} and bar=${bar} and baz=${foo};")]
       (is (= "select * from foobar where foo=? and bar=? and baz=?;" sql))
       (is (= [:foo :bar :foo] arg-names)))))
-
-
-(run-tests)
