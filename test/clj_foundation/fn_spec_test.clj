@@ -1,6 +1,7 @@
 (ns clj-foundation.fn-spec-test
   (:require [clojure.test :refer :all]
             [clojure.spec.alpha :as s]
+            [clojure.string :as str]
             [clj-foundation.fn-spec :refer :all]))
 
 
@@ -38,7 +39,31 @@
 
 
 (=> f [number? number? string?] string?
-   "docstring"
+   "Happy case test function"
    [[a b] c]
 
    (str (* a b) " " c))
+
+
+(=> sad [number? number? string?] string?
+   "Wrong return type"
+   [[a b] c]
+
+   (* a b))
+
+
+(deftest =>-test
+  (testing "The function's docstring includes user-defined docstring and the function type."
+    (let [docstring (-> #'f meta :doc)]
+      (is (str/includes? docstring "Happy case test function"))
+      (is (str/includes? docstring "(=> [[number? number?] string?] string?)"))))
+
+  (testing "Calling function functions correctly"
+    (is (= "6 times" (f [2 3] "times"))))
+
+  (testing "Incorrect argument types or return value types throw an assertion error"
+    (is (thrown? AssertionError (f ["" 3] "fold")))
+    (is (thrown? AssertionError (f [2 ""] "fold")))
+    (is (thrown? AssertionError (f [2 3] 42)))
+
+    (is (thrown? AssertionError (sad [2 3] "fold")))))

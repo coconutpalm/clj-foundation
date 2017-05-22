@@ -70,5 +70,5 @@
 
     `(defn ~f ~typed-docs ~arglist
        {:pre  [~@all-valid?]
-        :post [#(s/valid? ~return-spec %)]}
+        :post [(s/valid? ~return-spec ~(symbol "%"))]}
        ~@body)))
