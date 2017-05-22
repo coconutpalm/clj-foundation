@@ -11,27 +11,23 @@
   []
   ;; Set time zone to UTC to normalize timestamps, remove the need for DST conversions,
   ;; and to allow unit tests to run with the same timezone as jobs / application code
-  (log :debug "Running [ONCE] common unit test setup")
   (TimeZone/setDefault (TimeZone/getTimeZone "UTC"))
   (s/set-compile-fn-validation! true))
 
 
 (defn common-once-cleanup
   "Tear down / cleanup code common to all unit tests"
-  []
-  (log :debug "Running [ONCE] common unit test cleanup / tear down"))
+  [])
 
 
 (defn common-each-setup
   "Setup code applicable to all unit tests"
-  []
-  (log :debug "Running [EACH] common unit test setup"))
+  [])
 
 
 (defn common-each-cleanup
   "Setup code applicable to all unit tests"
-  []
-  (log :debug "Running [EACH] common unit test cleanup / tear down"))
+  [])
 
 
 (defn common-once-test-fixture
