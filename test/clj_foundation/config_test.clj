@@ -16,7 +16,7 @@
 (defconfig config-dev "POROOOD" "_test-config.edn"
   :ENGLISH-GREETING "G'day mate!")
 
-(defconfig config-prod "CONFIG-PROD" "_test-config.edn"
+(defconfig config-prod "CONFIG_PROD" "_test-config.edn"
   :ENGLISH-GREETING "G'day mate!")
 
 

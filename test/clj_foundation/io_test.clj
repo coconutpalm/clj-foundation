@@ -35,10 +35,10 @@
     (is (= "/some/file/path" (normalize-file-input "/some/file/path"))))
 
   (testing "Return the default value as a resource when the envar is not defined"
-    (is (instance? URL (normalize-file-input ["CONFIG-PRODDD" "_test-config.edn"]))))
+    (is (instance? URL (normalize-file-input ["CONFIG_PRODDD" "_test-config.edn"]))))
 
   (testing "Return the envar value as a file if it is defined"
-    (is (instance? File (normalize-file-input ["CONFIG-PROD" "_test-config.edn"]))))
+    (is (instance? File (normalize-file-input ["CONFIG_PROD" "_test-config.edn"]))))
 
   (testing "If a resource or file is specified explicitly, an appropriate URL or File is returned"
     (is (instance? URL (normalize-file-input {:resource "_test-config.edn"})))
@@ -65,10 +65,10 @@
 
   (testing "Read a resource using extended syntax returns its contents"
     (is (< 0 (count (read-file {:resource "_test-config.edn"}))))
-    (is (< 0 (count (read-file ["CONFIG-PROOOOD" "_test-config.edn"])))))
+    (is (< 0 (count (read-file ["CONFIG_PROOOOD" "_test-config.edn"])))))
 
   (testing "Reading a resource overridden by a file ENVAR returns the file's contents"
-    (let [contents (read-file ["CONFIG-PROD" "_test-config.edn"])]
+    (let [contents (read-file ["CONFIG_PROD" "_test-config.edn"])]
       (is (< 0 (count contents)))
       (is (str/includes? contents "salut")))))
 
@@ -80,11 +80,11 @@
       (is (str/includes? contents "bonjour"))))
 
   (testing "Reading an overridden resource returns its contents"
-    (let [contents (resource-as-string "CONFIG-PROOOOOD" "_test-config.edn")]
+    (let [contents (resource-as-string "CONFIG_PROOOOOD" "_test-config.edn")]
       (is (< 0 (count contents)))
       (is (str/includes? contents "bonjour")))
 
-    (let [contents (resource-as-string "CONFIG-PROD" "_test-config.edn")]
+    (let [contents (resource-as-string "CONFIG_PROD" "_test-config.edn")]
       (is (< 0 (count contents)))
       (is (str/includes? contents "salut"))))
 
@@ -97,7 +97,7 @@
   (io/copy (-> "_test-config-prod.edn" io/resource slurp) (io/file "/tmp/_test-config-prod.edn"))
 
   (testing "Reading a template without variables returns its contents"
-    (is (< 0 (count (read-template ["CONFIG-PROD" "_test-config.edn"])))))
+    (is (< 0 (count (read-template ["CONFIG_PROD" "_test-config.edn"])))))
 
   (testing "Reading a template with variables but not supplying values throws an exception"
     (is (thrown? ExceptionInfo (read-template {:resource "_test-config.edn"}))))
@@ -108,12 +108,10 @@
       (is (str/includes? file-content "heyo"))))
 
   (testing "Reading a template using embedded extended file syntax returns the correct contents"
-    (let [file-content (read-template "CONFIG-PROOOD" "_test-config.edn" :ENGLISH-GREETING "heyo")]
+    (let [file-content (read-template "CONFIG_PROOOD" "_test-config.edn" :ENGLISH-GREETING "heyo")]
       (is (< 0 (count file-content)))
       (is (str/includes? file-content "heyo")))
 
-    (let [file-content (read-template "CONFIG-PROD" "_test-config.edn" :ENGLISH-GREETING "heyo")]
+    (let [file-content (read-template "CONFIG_PROD" "_test-config.edn" :ENGLISH-GREETING "heyo")]
       (is (< 0 (count file-content)))
       (is (str/includes? file-content "yo!")))))
-
-(run-tests)
