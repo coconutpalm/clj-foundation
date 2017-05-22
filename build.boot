@@ -1,6 +1,6 @@
 (def task-options
   {:project 'coconutpalm/clj-foundation
-   :version "0.9.25"
+   :version "0.10.0"
    :project-name "clj-foundation"
    :project-openness :open-source
 
