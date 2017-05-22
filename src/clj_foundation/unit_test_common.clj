@@ -51,6 +51,5 @@
 ; Fixture registration: runs when the file is included / compiled
 
 (defn register-fixtures []
-  (log :debug "Registering unit test fixtures")
   (use-fixtures :once common-once-test-fixture)
   (use-fixtures :each common-each-test-fixture))
