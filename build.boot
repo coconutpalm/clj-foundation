@@ -31,5 +31,7 @@ to know when you're using them.  Use a small set of common-sense dependencies to
 
 (require '[clj-boot.core :refer :all])
 
+;; Expects:
+;; export CONFIG_PROD="/tmp/_test-config-prod.edn"
 
 (set-task-options! task-options)
