@@ -57,4 +57,7 @@
   (convert Map (vec s)))
 
 
-(defmethod convert :default [_ _] patterns/NO-RESULT-ERROR)
+(defmethod convert :default [dest-class src-instance]
+  (if (.isAssignableFrom dest-class (.getClass src-instance))
+    src-instance
+    (throw (IllegalArgumentException. (str "Cannot convert from " (.getClass src-instance) " to " dest-class)))))
