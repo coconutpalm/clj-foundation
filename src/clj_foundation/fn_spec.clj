@@ -34,41 +34,98 @@
 (defn spec? [a] (or (keyword? a) (instance? clojure.lang.IFn a)))
 
 
+(defn- arglist-str    [arglist] (pr-str arglist))
+(defn- arglist-vector [arglist] (flatten arglist))
+(defn- argspec        [arglist parameter-specs] (prewalk-replace (symbol->spec (arglist-vector arglist)
+                                                                               parameter-specs)
+                                                                 arglist))
+(defn- all-valid?     [arglist parameter-specs] (validations (arglist-vector arglist)
+                                                             parameter-specs
+                                                             (arglist-str arglist)))
+(defn- type-str       [arglist parameter-specs return-spec] (str "(=> "
+                                                                 (argspec arglist parameter-specs)
+                                                                 " "
+                                                                 return-spec
+                                                                 ")"))
+(defn- typed-docs     [docstring type-str] (str (if (empty? docstring) "" (str docstring "\n")) type-str))
+
+
+(defn typed-fn
+  "Return a defn statement with :pre and :post conditions using specs to typecheck parameters and return value."
+  [f parameter-specs return-spec more]
+  (let [[docstring
+         arglist
+         body]   (if (string? (first more))
+                   [(first more) (second more) (rest (rest more))]
+                   [""           (first more)  (rest more)])
+        new-docs (typed-docs docstring (type-str arglist parameter-specs return-spec))]
+
+    (assert (s/valid? (s/coll-of spec?) arglist))
+
+    `(defn ~f ~new-docs ~arglist
+       {:pre  [~@(all-valid? arglist parameter-specs)]
+        :post [(s/valid? ~return-spec ~(symbol "%"))]}
+       ~@body)))
+
+
+(defn annotate-fn
+  "Rename the existing f; make a new f with type checking/docs; delegate to the renamed f."
+  [f parameter-specs return-spec]
+  (let [resolved-f (resolve f)
+        f-renamed (symbol (str f `-renamed#))
+        docstring (-> resolved-f meta :doc)
+        arglist (-> resolved-f args first)
+        new-docs (typed-docs docstring (type-str arglist parameter-specs return-spec))]
+
+    (assert (s/valid? (s/coll-of spec?) arglist))
+
+    `(do
+       (def ~f-renamed ~f)
+       (defn ~f ~new-docs [& args#]
+         {:post [(s/valid? ~return-spec ~(symbol "%"))]}
+
+         (let [~arglist args#]
+           ~@(map (fn [condition] `(assert ~condition))
+                  (all-valid? arglist parameter-specs)))
+
+         (apply ~f-renamed args#)))))
+
+
 (defmacro =>
-  "Define a typed function.  The function's type signature is first, followed by the
-  usual defn parameters.  The metadata map is supplied by this macro and cannot currently
-  be overridden/supplemented.
+  "Define a typed function or redefine an existing function to be typed.
 
-  Define function f with calls to s/valid for each parameter and the return value in the
-  :pre and :post conditions of f.  Only handles a single argument list.  Includes
-  the derived function type in the docstring.
+  The function's name and type signature are first.  If nothing else follows, the specified
+  function must already exist and it will be redefined with the pre/post conditions specified
+  by the parameter specs and return spec.  If a function definition (in defn form) follows,
+  emits new defn containing pre/post conditions as specified by the parameter specs and return
+  spec.
 
-  f               - The function to define.
-  parameter-specs - A vector of the specs to use to validate each (destructured) argument.
-  return-spec     - A spec to validate the return value.
-  body            - docstring? [arglist-vector] & statements"
+  The metadata map is supplied by this macro and cannot currently be overridden/supplemented.
+  Only handles a single argument list.
+
+  In all cases, includes the derived function type in the function's docstring.
+
+  f -
+  The function to define.
+
+  parameter-specs -
+  A vector of the specs to use to validate each (destructured) argument.  For example, if the
+  argument list is [[x y] color] then the parameter spec must have three elements, corresponding
+  to x, y, and color.  e.g.: [number? number? keyword?]  The parameter spec is always flattened,
+  with the arguments listed in the order in which they appear in the parameter list.
+
+  return-spec -
+  A spec to validate the return value.
+
+  more -
+  If present, in the form: docstring? [arglist-vector] & statements.  If empty, then annotates
+  an existing function f with a type defined by parameter-specs => return-spec."
   [f parameter-specs return-spec & more]
 
   {:pre [(s/valid? symbol? f)
          (s/valid? (s/coll-of spec?) parameter-specs)
-         (s/valid? spec? return-spec)
-         (s/valid? #(not (empty? %)) more)]}
+         (s/valid? spec? return-spec)]}
 
-  (let [[docstring
-         arglist
-         body]         (if (string? (first more))
-         [(first more) (second more) (rest (rest more))]
-         [""           (first more)  (rest more)])
-        arglist-str    (pr-str arglist)
-        arglist-vector (flatten arglist)
-        argspec        (prewalk-replace (symbol->spec arglist-vector parameter-specs) arglist)
-        all-valid?     (validations arglist-vector parameter-specs arglist-str)
-        type-str       (str "(=> " argspec " " return-spec ")")
-        typed-docs     (str (if (empty? docstring) "" (str docstring "\n")) type-str)]
-
-    (assert (s/valid? (s/coll-of spec?) arglist))
-
-    `(defn ~f ~typed-docs ~arglist
-       {:pre  [~@all-valid?]
-        :post [(s/valid? ~return-spec ~(symbol "%"))]}
-       ~@body)))
+  (if (empty? more)
+    (annotate-fn f parameter-specs return-spec)
+    (typed-fn f parameter-specs return-spec more)))

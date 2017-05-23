@@ -38,7 +38,7 @@
              (validations [a b] [number? string?] "[a b]"))))))
 
 
-(=> f [number? number? string?] string?
+(=> happy [number? number? string?] string?
    "Happy case test function"
    [[a b] c]
 
@@ -52,18 +52,26 @@
    (* a b))
 
 
+(defn twice [a] (str a a))
+(=> twice [string?] string?)
+
+
 (deftest =>-test
   (testing "The function's docstring includes user-defined docstring and the function type."
-    (let [docstring (-> #'f meta :doc)]
+    (let [docstring (-> #'happy meta :doc)]
       (is (str/includes? docstring "Happy case test function"))
       (is (str/includes? docstring "(=> [[number? number?] string?] string?)"))))
 
   (testing "Calling function functions correctly"
-    (is (= "6 times" (f [2 3] "times"))))
+    (is (= "6 times" (happy [2 3] "times"))))
 
   (testing "Incorrect argument types or return value types throw an assertion error"
-    (is (thrown? AssertionError (f ["" 3] "fold")))
-    (is (thrown? AssertionError (f [2 ""] "fold")))
-    (is (thrown? AssertionError (f [2 3] 42)))
+    (is (thrown? AssertionError (happy ["" 3] "fold")))
+    (is (thrown? AssertionError (happy [2 ""] "fold")))
+    (is (thrown? AssertionError (happy [2 3] 42)))
 
-    (is (thrown? AssertionError (sad [2 3] "fold")))))
+    (is (thrown? AssertionError (sad [2 3] "fold"))))
+
+  (testing "A function annotated with type information fails on type errors"
+    (is (= "HelloHello" (twice "Hello")))
+    (is (thrown? AssertionError (twice 42)))))
