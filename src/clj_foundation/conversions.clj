@@ -17,10 +17,18 @@
   "Alias for clojure.lang.ISeq"
   clojure.lang.ISeq)
 
+(def Date
+  "Alias for java.util.Date"
+  java.util.Date)
+
+(def SqlDate
+  "Alias for java.sql.Date"
+  java.sql.Date)
+
 
 (defmulti convert
   "Convert src-instance to dest-class if possible.  Returns patterns/NO-RESULT-ERROR
-  on failure.  For examplle:
+  on failure.  For example:
 
   * (convert Boolean/TYPE \"true\")
   * (convert Map vararg-parameter-kvs)"
@@ -38,6 +46,30 @@
 (defmethod convert [Map Vector] [_ v]
   (must-be "Vector/Seq must contain key-value pairs" (even? (count v)))
   (apply assoc {} v))
+
+
+(defmethod convert [Long Date] [_ d]
+  (.getTime d))
+(defmethod convert [Long/TYPE Date] [_ d]
+  (.getTime d))
+
+(defmethod convert [Long SqlDate] [_ d]
+  (.getTime d))
+(defmethod convert [Long/TYPE SqlDate] [_ d]
+  (.getTime d))
+
+(defmethod convert [Date Long] [_ l]
+  (java.util.Date. l))
+(defmethod convert [Date Long/TYPE] [_ l]
+  (java.util.Date. l))
+
+(defmethod convert [SqlDate Long] [_ l]
+  (java.sql.Date. l))
+(defmethod convert [SqlDate Long/TYPE] [_ l]
+  (java.sql.Date. l))
+
+(defmethod convert [SqlDate Date] [_ d]
+  (java.sql.Date. (.getTime d)))
 
 
 ;; Synonyms...
