@@ -6,12 +6,13 @@
 
 clj-foundation supplies namespaces making additional simple things easy and hard things possible in Clojure that are intended for use across all Clojure projects at Brad's Deals.
 
-(This fork intends to maintain and to continue to develop upon the work begun at Bra'ds Deals in the ShopSmart repository.)
-
 * Enhances the core language in resonable, useful, and conservative ways.
 * Enables programming using a monadic style without requiring explicit monad types.
 * Describes, specifies, and illustrates best practices at Brad's Deals for working in Clojure.
 * The only dependencies are Clojure, Potemkin, and Schema in order to minimize adoption friction.
+
+This fork intends to maintain and to continue to develop upon the work begun at Bra'ds Deals in the ShopSmart repository.  Pull requests back into ShopSmart's repository are welcome if ShopSmart wants to continue maintaining their version.
+
 
 ## High-quality domain-specific libraries complimenting this
 
