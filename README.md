@@ -11,7 +11,7 @@ clj-foundation supplies namespaces making additional simple things easy and hard
 * Describes, specifies, and illustrates best practices at Brad's Deals for working in Clojure.
 * The only dependencies are Clojure, Potemkin, and Schema in order to minimize adoption friction.
 
-This fork intends to maintain and to continue to develop upon the work begun at Bra'ds Deals in the ShopSmart repository.  Pull requests back into ShopSmart's repository are welcome if ShopSmart wants to continue maintaining their version.
+This fork intends to maintain and to continue to develop upon the work begun at Brad's Deals in the ShopSmart repository.  Pull requests back into ShopSmart's repository are welcome if ShopSmart wants to continue maintaining their version.
 
 
 ## High-quality domain-specific libraries complimenting this
