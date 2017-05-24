@@ -19,7 +19,7 @@ to know when you're using them.  Use a small set of common-sense dependencies to
           :source-paths   #{"src" "test"}
 
           :dependencies   '[[org.clojure/clojure  "1.8.0"]
-                            [clojure-future-spec  "1.9.0-alpha16-1"]
+                            [clojure-future-spec  "LATEST"]
 
                             [io.aviso/pretty      "0.1.30"]
                             [org.clojure/data.csv "0.1.3"]
