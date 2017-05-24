@@ -1,17 +1,17 @@
 # clj-foundation
 
+[![Clojars Project](https://img.shields.io/clojars/v/coconutpalm/clj-foundation.svg)](https://clojars.org/coconutpalm/clj-foundation)
+
 ## Why clj-foundation?
 
 clj-foundation supplies namespaces making additional simple things easy and hard things possible in Clojure that are intended for use across all Clojure projects at Brad's Deals.
+
+(This fork intends to maintain and to continue to develop upon the work begun at Bra'ds Deals in the ShopSmart repository.)
 
 * Enhances the core language in resonable, useful, and conservative ways.
 * Enables programming using a monadic style without requiring explicit monad types.
 * Describes, specifies, and illustrates best practices at Brad's Deals for working in Clojure.
 * The only dependencies are Clojure, Potemkin, and Schema in order to minimize adoption friction.
-
-## Other Clojure foundational libraries that compliment this one
-
-* Hara: http://docs.caudate.me/hara/index.html
 
 ## High-quality domain-specific libraries complimenting this
 
@@ -36,10 +36,10 @@ The folowing is a small sample of clj-foundation's features:
 
 ```clojure
 (let-map [meaning 42
-          secrets (io/read-file "/etc/passwd")])
+          twice-meaning (* 2 meaning)])
 ==>
 {:meaning 42
- :secrets "nobody:*:-2:-2:Unprivileged User:/var/empty:/usr/bin/false\nroot:*:0:0:System Administrator:/var/root:/bin/sh\n...."}
+ :twice-meaning 84}
 ```
 
 ## Data/error processing enhancements and timeout handling.
@@ -114,43 +114,16 @@ ExceptionInfo Not found: '${NAME}'  clojure.core/ex-info
 * A let-map form similar to "let" that returns its names and values as a Map--for those times the values of subsequent keys in a Map depend on the values of prior ones.
 * Simple named implementations of design patterns familiar to Java developers, particularaly Singleton.
 
-# Deployment/usage
+# Development
 
-## Leiningen coordinates
-
-```clojure
-:user {:repositories [["jitpack" "https://jitpack.io"]]
-
-       :dependencies [[com.github.shopsmart/clj-foundation "version"]]}
-```
-
-where "version" currently is "[![Release](http://jitpack.io/v/com.github.shopsmart/clj-foundation.svg)](https://jitpack.io/#shopsmart/clj-foundation)".
-
-## Maven coordinates
-
-```xml
-<repositories>
-  <repository>
-    <id>jitpack.io</id>
-    <name>Jitpack repo</name>
-    <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-```
-
-* GroupId: com.github.shopsmart
-* ArtifactId: clj-foundation
-* Version: [![Release](http://jitpack.io/v/com.github.shopsmart/clj-foundation.svg)](https://jitpack.io/#shopsmart/clj-foundation)
-
-## Manual build/test
+This project uses clj-boot as its standard set of boot tasks.  So as for all clj-boot projects, one can:
 
 ```bash
-# Build
-$ lein jar
-
-# Test
-$ lein with-profile test test
+# time to code... ;-)
+$ boot dev
 ```
+
+Then you can connect to the nrepl (via Cider, etc.) or use the included Nightlight editor at the URL printed when `boot dev` started.
 
 
 # Definition of Done for 1.0 release
@@ -160,9 +133,6 @@ $ lein with-profile test test
     * To remove duplicated functionality (which may contradict the API compatibility principle)
     * To maintain API compatibility with code copied from internal Brad's Deals projects to the greatest extent possible.
     * Clear naming convention for namespaces that are provisional (non-frozen, WIP) API.
-
-* Known tech debt that may influence APIs
-    * Consider migrating db.clj's local configuration mechanism to config.clj (and then make an instance of the generic implementation inside db.clj)
 
 * Target Clojure 1.9
     * All functions will have type information supplied via Clojure 1.9 specs.
@@ -184,7 +154,7 @@ $ lein with-profile test test
     * Machine generate as much as possible?
 
 * Make clj_infrastructure as a separate library
-    * Move db.clj there?
+    * Move db.clj there *DONE*?
     * Abstract db.clj API using monads at the foundation layer and implement for relational, nosql, etc. in infrastructure?
         * http://rea.tech/the-worst-thing-in-our-scala-code-futures/  ?
         * Abstractions for creating/consuming lazy sequences?
